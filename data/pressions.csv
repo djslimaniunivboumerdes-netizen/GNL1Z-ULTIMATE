@@ -1,0 +1,48 @@
+Equipment Code,Désignation,Pression d’épreuve en Bars,N° de Série
+E-501,Condenseur de tête,C : 8.6 / F : 7.8,35959 – 6
+E-502,Rebouilleur MEA,C : 7.5 / F : 7.5,35960 – 6
+E-503A,Echangeur MEA,C : 7.8 / F : 74.4,35961-6
+E-503B,Echangeur MEA,C : 7.8 / F : 74.4,35961-6
+X01-E-504,Refroidisseur MEA,C : 97.5 / F : 7.8,35962 – 6
+E-505,Purificateur de MEA,C : 7.8 / F : 18.8,35963 – 6
+E-506,Surchauffeur,C : 15.5 / F : 74.43,387704-6
+E-03.15,Aéro réfrigérant,74.46,93B2561 – H/5254
+X02-E-03.16,Aéro réfrigérant,74.46,93B2561 – H/5255
+X02-E-15.50,Refroidisseur fuel Gaz,C : 10.3/ F : -,40509 – 6
+X02-E-15.51,Réchauffeur de gaz de dégivrage,C : 15.5 / F : 75.1,35967 – 6
+E-05.15,Réchauffeur de Gaz de Dégivrage,C : 29.4 / F : 74.55,40459 – 6
+X04-E-05.21,Condenseur de propane évent,C : 31 / F : 7.8,387709 – 6
+X04-E-07.13,Pré refroidisseur,C : 15.6 / F : 74.3,35968 – 6
+X04-E-07.17,Rebouilleur Tour de lavage,C : 74/ F : 59,40506 – 6
+X07-E-07.22,Réchauffeur de Butane,C : 58.5/ F : 15.5,40507 – 6
+X07-E-07.23,Condenseur de tête déméthaniser,C : 9.3 / F : 52,3424 – F
+X07-E-07.30,Rebouilleur du Déméthaniser,C : 34.7 / F : 20.7,35971 – 6
+X08-E-07.32,Refroidisseur Fond  Déméthaniser,C : 52/ F : 8,40508 – 6
+X08-E-07.33,Condenseur de Dééthaniseur,C : 29.47 / F : 36.6,40458 – 6
+X09-E-07.42,Rebouilleur du Dééthaniseur,C : 15.5/ F : 33.6,3 – 72 – 04 – 35972 – 6
+X09-E-07.43,Condenseur du Dépropaniseur,C : 31.2/ F : 5.4,40487 – 6
+E-07.39,Rebouilleur du Dépropaniseur,C : 15.5/ F : 28.7,3 – 72 – 04 – 35973 – 6
+X10-E-07.52,Sous refroidisseur retour d’éthane,C : 8.96 / F : 33.78,3491 – 6
+X10-E-07.53,Condenseur du Débutaniseur,C : 10.4 / F : 7.8,387303 – 6
+X10-E-07.58,Rebouilleur du Débutaniseur,C : 10.4/ F : 10.35,3 – 72 – 04 – 35974 – 6
+7X3-E-03.17,Refroidisseur d’essence,C : 10.4/ F : -,73 – 8001 – 6
+X03-F-05.16,Réchauffeur de réactivation,C : 75 / F : 97.5,91 –760AA/F
+X01-G-502,Colonne de purge de propane,31.03,7773 – .F
+X01-G-507,Séparateur de Gaz Acide,7.8,V – 2089 – F
+X02-G-304,Ballon de Détente MEA,22.67,7817 – F
+G-03.14,Mélange Vapeur Gaz Combustible,10.34,8559B6
+X02-G-07.87,Séparateur régénération Sécheur,74.55,7837 – F
+X04-G-07.14,Séparateur du Sécheur,75,04 – 10121 – 302
+X07-G-07.24,Séparateur de tour de lavage,74.53,10349 – 6101
+X08-G-07.34,Ballon  reflux  déméthaniser,57,9106 – 6 (Nouveau)
+X08-G-07.36,Ballon de reflux de Dééthaniseur,37.02,7778 – F
+X09-G-07.44,Séparateur propane Dééthaniseur,8.79,7779 – F
+X10-G-07.54,Ballon de reflux de Dépropaniseur,30.3,7780 – F
+X01-P-502,Ballon de reflux de Débutaniseur,11.37,7781 – F
+X02-P-03.12A,Filtre à tamis,96,1044 – 6
+X02-P-03.12B,Filtre Poussière,74.55,3HW – H3328-6
+X02-P-03.14A,Filtre Poussière,74.55,3HW – H3328-6
+X02-P-03.14B,Filtre à Mercure,74.5,3HW – H3328-6
+X02-R-03.10,Filtre à Mercure,74.5,3HW – H3328-6
+X02-R-03.11,,"78 ,5",
+,,"78 ,5",
