@@ -1,212 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GNL1Z - Digital Twin</title>
+    <title>Équipements GNL1Z</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        sonatrach: '#FF6B00',
-                        industrial: '#1e293b',
-                        darkbg: '#0f172a',
-                        darkcard: '#1e293b'
-                    }
-                }
-            }
-        }
-    </script>
 </head>
-<body class="bg-slate-100 dark:bg-darkbg text-slate-900 dark:text-slate-100 transition-colors duration-300">
+<body class="bg-black text-white font-sans">
     <div id="root"></div>
     <script type="text/babel">
-        const { useState, useEffect } = React;
-
-        // Translation Dictionary
-        const t = {
-            en: {
-                appTitle: "GNL1Z DIGITAL TWIN",
-                divTitle: "Production Division",
-                tabEquip: "Equipment Database",
-                tabDcs: "DCS & Schematics",
-                searchDcs: "Search instrument tag (e.g., LIC-501)...",
-                selectEquip: "Select Equipment",
-                viewPid: "View Technical P&ID",
-                info: "Equipment Information",
-                components: "Components & Materials",
-                tools: "Maintenance Tools",
-                lifting: "Lifting & Handling",
-                calorifuge: "Insulation / Calorifuge",
-                notFound: "No instruments found matching that tag."
-            },
-            fr: {
-                appTitle: "JUMEAU NUMÉRIQUE GNL1Z",
-                divTitle: "Division Production",
-                tabEquip: "Base d'Équipements",
-                tabDcs: "DCS & Schémas",
-                searchDcs: "Rechercher un repère (ex: LIC-501)...",
-                selectEquip: "Sélectionner l'équipement",
-                viewPid: "Ouvrir P&ID Technique",
-                info: "Informations Générales",
-                components: "Composants & Matériaux",
-                tools: "Outillage de Maintenance",
-                lifting: "Levage & Manutention",
-                calorifuge: "Calorifuge / Isolation",
-                notFound: "Aucun instrument trouvé pour ce repère."
-            }
-        };
+        const { useState } = React;
 
         const App = () => {
-            const [lang, setLang] = useState("fr");
-            const [isDark, setIsDark] = useState(false);
-            const [activeTab, setActiveTab] = useState("equip");
+            const [view, setView] = useState("home"); // home, equip, dcs, about
             const [selectedTag, setSelectedTag] = useState("E-501");
-            const [openSection, setOpenSection] = useState("info");
-            const [dcsSearch, setDcsSearch] = useState("");
+            const [openSection, setOpenSection] = useState(null);
+            const [searchQuery, setSearchQuery] = useState("");
 
-            // Apply Dark Mode Class to HTML tag
-            useEffect(() => {
-                if (isDark) document.documentElement.classList.add('dark');
-                else document.documentElement.classList.remove('dark');
-            }, [isDark]);
-
-            // Expanded Equipment Database
+            // --- DATABASE: EXTENDED MAINTENANCE INFO ---
             const equipmentData = {
-                "E-501": { name: "Condenseur de tête", info: "Type: Shell & Tube | Fluid: MCR/NG", components: "Stainless Steel Bundle", tools: "Hydraulic Torque Wrench (3/4\"), Flange Spreader, Gasket Scraper, Torque Multiplier", lifting: "Crane: 50T | 4m Nylon Slings", calorifuge: "Mineral Wool 50mm", pId: "e-501.pdf" },
-                "E-502": { name: "Rebouilleur MEA", info: "Heat source: LP Steam | Cap: 120m3/h", components: "U-Tube Bundle | Carbon Steel Shell", tools: "Impact Wrench (1\"), Tube Bundle Extractor, Caliper", lifting: "Crane: 25T | Shackles: 5T", calorifuge: "Calcium Silicate 40mm", pId: "e-502.pdf" },
-                "E-503A": { name: "Échangeur Chaleur A", info: "Cooling Medium: Seawater", components: "Titanium Plates", tools: "Plate Pack Tightening Tool, Pneumatic Wrench", lifting: "Chain Block 3T", calorifuge: "Polyurethane Foam", pId: "e-503a.pdf" },
-                "E-505": { name: "Réfrigérant Propane", info: "Type: Kettle Reboiler | Fluid: C3", components: "Low Temp Carbon Steel", tools: "Hydraulic Tensioners, Flange Alignment Pins", lifting: "Crane: 75T | Spreader Bar", calorifuge: "Cellular Glass (Foamglas) 80mm", pId: "e-505.pdf" },
-                "G-502": { name: "Pompe Reflux MEA", info: "Centrifugal Pump | 3000 RPM", components: "Mechanical Seal, Cast Iron Casing", tools: "Laser Shaft Alignment Kit, Bearing Puller, Vibration Analyzer", lifting: "A-Frame Gantry 2T", calorifuge: "None", pId: "g-502.pdf" },
-                "X04-E-05.24": { name: "Réfrigérant MCR Principal", info: "Main Cryogenic Heat Exchanger (MCHE)", components: "Aluminum Wound Tubes", tools: "Cryogenic Leak Detector, Ultrasonic Flaw Detector, Specialized Flange Torques", lifting: "Heavy Lift Crane 200T+", calorifuge: "Cryogel Z / Perlite", pId: "x04-e-05.24.pdf" }
+                "E-501": { 
+                    name: "Condenseur de tête", 
+                    info: "Type: Shell & Tube | Press: 45 Bar | Temp: -160°C", 
+                    components: "Bundle: Stainless 316L | Gaskets: Spiral Wound Graphite",
+                    tools: "Hydraulic Torque Wrench (3/4\"), Flange Spreader, Gasket Scraper, Pneumatic Impact Kit, Caliper, Ultrasonic Thickness Gauge",
+                    lifting: "Primary: 50T Mobile Crane | Slings: 4x 5m (10T each) | Shackles: 12T (Bow type) | Spreader Bar required",
+                    isolation: "Lockout: Inlet/Outlet Valves V-501/502 | Blind Flange: 12\" Class 600 | Nitrogen Purge required"
+                },
+                "E-502": { 
+                    name: "Rebouilleur MEA", 
+                    info: "Thermal Duty: 15 MW | Fluid: Amine/Steam", 
+                    components: "U-Tube Bundle | Carbon Steel Shell",
+                    tools: "Tube Bundle Extractor, Pressure Test Pump (200 Bar), Internal Tube Cutter, Cleaning Brushes",
+                    lifting: "A-Frame Gantry | Chain Block 10T | 2m Wire Rope Slings",
+                    isolation: "Double Block & Bleed | Steam Header Isolation | MEA Drainage protocol"
+                }
             };
 
-            // Simulated DCS Smart Search Database
-            const dcsData = [
-                { id: "liquefaction-1.jpg", title: "MCR Liquefaction Unit", tags: ["LIC-501", "TIC-502", "FIC-104", "XV-01"] },
-                { id: "decarbonation-01.jpg", title: "Decarbonation Section 200", tags: ["PIC-201", "LIC-205", "HV-12"] },
-                { id: "MCR-1.jpg", title: "Main Cryogenic Cycle", tags: ["TIC-404", "FIC-405", "LIC-410"] }
+            // --- DATABASE: PRE-INDEXED DCS TAGS (SIMULATED OCR RESULT) ---
+            const dcsIndex = [
+                { file: "liquefaction-1.jpg", title: "MCR Section 500", tags: ["LIC-501", "TIC-502", "FIC-101", "XV-001", "PI-505"] },
+                { file: "decarbonation-01.jpg", title: "Decarbonation Unit", tags: ["PIC-201", "LIT-204", "HV-210", "E-502"] }
             ];
 
-            const filteredDCS = dcsData.filter(img => 
-                img.tags.some(tag => tag.toLowerCase().includes(dcsSearch.toLowerCase())) ||
-                img.title.toLowerCase().includes(dcsSearch.toLowerCase())
+            const filteredDcs = dcsIndex.filter(d => 
+                d.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                d.title.toLowerCase().includes(searchQuery.toLowerCase())
             );
 
-            const sections = [
-                { id: "info", icon: "ℹ️" }, { id: "components", icon: "⚙️" },
-                { id: "tools", icon: "🔧" }, { id: "lifting", icon: "🏗️" }, { id: "calorifuge", icon: "🌡️" }
-            ];
+            // --- UI COMPONENTS ---
+            if (view === "home") {
+                return (
+                    <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center">
+                        <img src="./assets/sonatrach_logo.png" className="w-48 mb-12" alt="Sonatrach" />
+                        <h1 className="text-4xl font-bold text-[#FF6B00] mb-10">Équipements GNL1Z</h1>
+                        
+                        <div className="w-full max-w-sm space-y-4">
+                            <button onClick={() => setView("about")} className="w-full py-3 border border-[#FF6B00] rounded-lg text-[#FF6B00] font-bold text-lg hover:bg-[#FF6B00] hover:text-white transition">À propos de GNL1Z</button>
+                            <button onClick={() => setView("equip")} className="w-full py-3 border border-[#FF6B00] rounded-lg text-[#FF6B00] font-bold text-lg hover:bg-[#FF6B00] hover:text-white transition">Liste des Équipements</button>
+                            <button onClick={() => setView("dcs")} className="w-full py-3 border border-[#FF6B00] rounded-lg text-[#FF6B00] font-bold text-lg hover:bg-[#FF6B00] hover:text-white transition">Système DCS & Tags</button>
+                            <button className="w-full py-3 border border-gray-600 rounded-lg text-gray-400 font-bold text-lg">English</button>
+                        </div>
+                    </div>
+                );
+            }
 
             return (
-                <div className="max-w-6xl mx-auto min-h-screen p-2 md:p-6 font-sans">
-                    {/* Header Controls */}
-                    <div className="flex justify-between items-center mb-2 px-2">
-                        <button onClick={() => setLang(lang === "en" ? "fr" : "en")} className="text-xs font-bold bg-slate-200 dark:bg-slate-700 px-3 py-1 rounded">
-                            {lang.toUpperCase()}
-                        </button>
-                        <button onClick={() => setIsDark(!isDark)} className="text-xl">
-                            {isDark ? "☀️" : "🌙"}
-                        </button>
-                    </div>
+                <div className="min-h-screen bg-slate-900 p-4">
+                    <button onClick={() => setView("home")} className="text-[#FF6B00] font-bold mb-4 flex items-center">← Retour</button>
+                    
+                    {view === "equip" && (
+                        <div className="space-y-4">
+                            <select 
+                                className="w-full p-4 bg-black border border-[#FF6B00] rounded-xl text-[#FF6B00] font-bold text-lg"
+                                onChange={(e) => setSelectedTag(e.target.value)}
+                            >
+                                {Object.keys(equipmentData).map(tag => <option key={tag}>{tag}</option>)}
+                            </select>
 
-                    {/* Main Header */}
-                    <header className="bg-sonatrach text-white p-5 rounded-2xl flex justify-between items-center shadow-lg">
-                        <div>
-                            <h1 className="text-2xl font-black tracking-tight">{t[lang].appTitle}</h1>
-                            <p className="text-sm uppercase font-semibold opacity-90">{t[lang].divTitle}</p>
+                            <div className="bg-black p-4 rounded-2xl border border-gray-800">
+                                <h2 className="text-2xl font-bold text-[#FF6B00] mb-4">{selectedTag}</h2>
+                                {["info", "components", "tools", "lifting", "isolation"].map(sec => (
+                                    <div key={sec} className="mb-2 border-b border-gray-800">
+                                        <button 
+                                            onClick={() => setOpenSection(openSection === sec ? null : sec)}
+                                            className="w-full py-4 flex justify-between uppercase text-xs font-bold tracking-widest text-gray-400"
+                                        >
+                                            {sec} <span>{openSection === sec ? "−" : "+"}</span>
+                                        </button>
+                                        {openSection === sec && <div className="pb-4 text-sm text-slate-300">{equipmentData[selectedTag][sec]}</div>}
+                                    </div>
+                                ))}
+                                <a href={`./pids/${selectedTag.toLowerCase()}.pdf`} target="_blank" className="block mt-4 w-full bg-[#FF6B00] text-black text-center py-3 rounded-lg font-bold">OUVRIR P&ID</a>
+                            </div>
                         </div>
-                        <img src="./assets/sonatrach_logo.png" alt="Logo" className="h-10 bg-white p-1 rounded hidden sm:block" />
-                    </header>
+                    )}
 
-                    {/* Tabs */}
-                    <div className="flex space-x-2 mt-6 mb-4">
-                        <button onClick={() => setActiveTab("equip")} className={`px-6 py-3 rounded-t-lg font-bold transition-colors ${activeTab === "equip" ? "bg-white dark:bg-darkcard text-sonatrach border-t-4 border-sonatrach shadow-sm" : "bg-slate-200 dark:bg-slate-800 text-slate-500"}`}>
-                            🗄️ {t[lang].tabEquip}
-                        </button>
-                        <button onClick={() => setActiveTab("dcs")} className={`px-6 py-3 rounded-t-lg font-bold transition-colors ${activeTab === "dcs" ? "bg-white dark:bg-darkcard text-sonatrach border-t-4 border-sonatrach shadow-sm" : "bg-slate-200 dark:bg-slate-800 text-slate-500"}`}>
-                            🖥️ {t[lang].tabDcs}
-                        </button>
-                    </div>
-
-                    {/* Content Area */}
-                    <div className="bg-white dark:bg-darkcard rounded-b-2xl rounded-tr-2xl shadow-md p-4 md:p-6 min-h-[60vh]">
-                        
-                        {/* EQUIPMENT TAB */}
-                        {activeTab === "equip" && (
-                            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                                <div className="md:col-span-4">
-                                    <label className="text-xs font-bold text-gray-400 uppercase">{t[lang].selectEquip}</label>
-                                    <select 
-                                        className="w-full mt-2 p-4 bg-slate-50 dark:bg-slate-800 dark:text-white border dark:border-slate-700 rounded-xl font-bold"
-                                        value={selectedTag}
-                                        onChange={(e) => setSelectedTag(e.target.value)}
-                                    >
-                                        {Object.keys(equipmentData).map(tag => <option key={tag} value={tag}>{tag}</option>)}
-                                    </select>
-                                </div>
-
-                                <div className="md:col-span-8">
-                                    <h2 className="text-2xl font-bold mb-4 dark:text-white">{selectedTag} <span className="text-sonatrach">- {equipmentData[selectedTag].name}</span></h2>
-                                    <div className="space-y-3">
-                                        {sections.map(sec => (
-                                            <div key={sec.id} className="border dark:border-slate-700 rounded-xl overflow-hidden">
-                                                <button 
-                                                    onClick={() => setOpenSection(openSection === sec.id ? "" : sec.id)}
-                                                    className={`w-full flex justify-between p-4 font-bold transition-colors ${openSection === sec.id ? 'bg-sonatrach text-white' : 'bg-slate-50 dark:bg-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'}`}
-                                                >
-                                                    <span>{sec.icon} {t[lang][sec.id]}</span>
-                                                    <span>{openSection === sec.id ? '▼' : '▶'}</span>
-                                                </button>
-                                                {openSection === sec.id && (
-                                                    <div className="p-5 bg-white dark:bg-darkcard dark:text-slate-300 border-t dark:border-slate-700 leading-relaxed">
-                                                        {equipmentData[selectedTag][sec.id]}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div className="mt-6 flex justify-end">
-                                        <a href={`./pids/${equipmentData[selectedTag].pId}`} target="_blank" className="bg-industrial dark:bg-slate-700 text-white px-8 py-3 rounded-lg font-bold shadow hover:bg-black transition">
-                                            📄 {t[lang].viewPid}
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* DCS TAB */}
-                        {activeTab === "dcs" && (
-                            <div className="space-y-6">
-                                <input 
-                                    type="text" 
-                                    placeholder={t[lang].searchDcs}
-                                    value={dcsSearch}
-                                    onChange={(e) => setDcsSearch(e.target.value)}
-                                    className="w-full p-4 border-2 border-sonatrach rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white dark:border-sonatrach text-lg shadow-inner focus:outline-none"
-                                />
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {filteredDCS.length > 0 ? filteredDCS.map(dcs => (
-                                        <div key={dcs.id} className="border dark:border-slate-700 rounded-xl p-4 bg-slate-50 dark:bg-slate-800">
-                                            <h3 className="font-bold text-lg mb-2 dark:text-white">{dcs.title}</h3>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">Tags: {dcs.tags.join(", ")}</p>
-                                            <img src={`./assets/${dcs.id}`} alt={dcs.title} className="w-full h-64 object-cover rounded shadow" />
+                    {view === "dcs" && (
+                        <div className="space-y-4">
+                            <input 
+                                type="text" 
+                                placeholder="Rechercher Tag (ex: LIC-501)..." 
+                                className="w-full p-4 bg-black border-2 border-[#FF6B00] rounded-xl text-white outline-none"
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            <div className="grid grid-cols-1 gap-4 mt-4">
+                                {filteredDcs.map(d => (
+                                    <div key={d.file} className="bg-black p-4 rounded-xl border border-gray-800">
+                                        <h3 className="font-bold text-[#FF6B00] mb-2">{d.title}</h3>
+                                        <div className="flex flex-wrap gap-2 mb-4">
+                                            {d.tags.map(t => (
+                                                <span key={t} className={`text-[10px] px-2 py-1 rounded ${t.toLowerCase().includes(searchQuery.toLowerCase()) && searchQuery !== "" ? "bg-[#FF6B00] text-black" : "bg-gray-800 text-gray-400"}`}>{t}</span>
+                                            ))}
                                         </div>
-                                    )) : (
-                                        <p className="text-gray-500 italic p-4">{t[lang].notFound}</p>
-                                    )}
-                                </div>
+                                        <img src={`./assets/${d.file}`} className="w-full rounded h-40 object-cover" />
+                                    </div>
+                                ))}
                             </div>
-                        )}
-
-                    </div>
+                        </div>
+                    )}
                 </div>
             );
         };
