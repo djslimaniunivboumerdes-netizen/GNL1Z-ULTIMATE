@@ -7,68 +7,62 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .hidden-view { display: none !important; }
+        /* Custom dark grey for buttons to match your screenshot */
+        .btn-dark { background-color: #1a1a1a; }
     </style>
 </head>
 <body class="bg-black text-white font-sans min-h-screen">
 
     <div id="view-home" class="flex flex-col items-center justify-center min-h-screen p-6 text-center">
-        <img src="./assets/sonatrach_logo.png" class="w-48 mb-12" alt="Sonatrach" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Sonatrach.svg/1200px-Sonatrach.svg.png'" />
+        
+        <div class="bg-white p-4 mb-8">
+            <img src="./assets/sonatrach_logo.png" class="w-48" alt="Sonatrach" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Sonatrach.svg/1200px-Sonatrach.svg.png'" />
+        </div>
+        
         <h1 class="text-4xl font-bold text-[#FF6B00] mb-10">Équipements GNL1Z</h1>
 
         <div class="w-full max-w-sm space-y-4">
-            <button onclick="nav('about')" class="w-full py-3 border border-[#FF6B00] rounded-lg text-[#FF6B00] font-bold text-lg hover:bg-[#FF6B00] hover:text-white transition">À propos de GNL1Z</button>
-            <button onclick="nav('equip')" class="w-full py-3 border border-[#FF6B00] rounded-lg text-[#FF6B00] font-bold text-lg hover:bg-[#FF6B00] hover:text-white transition">Liste des Équipements</button>
-            <button onclick="nav('dcs')" class="w-full py-3 border border-[#FF6B00] rounded-lg text-[#FF6B00] font-bold text-lg hover:bg-[#FF6B00] hover:text-white transition">Système DCS & Tags</button>
-            <button class="w-full py-3 border border-gray-600 rounded-lg text-gray-400 font-bold text-lg">English</button>
+            <button onclick="nav('about')" class="w-full py-4 btn-dark border border-[#FF6B00] rounded text-[#FF6B00] font-bold text-lg active:bg-[#FF6B00] active:text-black transition">À propos de GNL1Z</button>
+            <button onclick="nav('equip')" class="w-full py-4 btn-dark border border-[#FF6B00] rounded text-[#FF6B00] font-bold text-lg active:bg-[#FF6B00] active:text-black transition">Liste des Équipements</button>
+            <button onclick="nav('dcs')" class="w-full py-4 btn-dark border border-[#FF6B00] rounded text-[#FF6B00] font-bold text-lg active:bg-[#FF6B00] active:text-black transition">Système DCS & Tags</button>
+            
+            <div class="pt-6">
+                <button class="px-8 py-2 bg-transparent border border-gray-500 rounded text-gray-300 font-bold text-sm">English</button>
+            </div>
         </div>
     </div>
 
     <div id="app-shell" class="hidden-view p-4 max-w-3xl mx-auto">
-        <button onclick="nav('home')" class="text-[#FF6B00] font-bold mb-6 flex items-center text-lg">← Retour à l'accueil</button>
+        <button onclick="nav('home')" class="text-[#FF6B00] font-bold mb-6 flex items-center text-lg">← Retour</button>
 
         <div id="view-equip" class="hidden-view space-y-4">
-            <select id="equip-select" class="w-full p-4 bg-black border border-[#FF6B00] rounded-xl text-[#FF6B00] font-bold text-lg outline-none" onchange="renderEquip()">
-                </select>
+            <select id="equip-select" class="w-full p-4 bg-[#1a1a1a] border border-[#FF6B00] rounded text-[#FF6B00] font-bold text-lg outline-none" onchange="renderEquip()">
+            </select>
 
-            <div class="bg-black p-4 rounded-2xl border border-gray-800 mt-4">
+            <div class="bg-[#1a1a1a] p-4 rounded border border-gray-800 mt-4">
                 <h2 id="equip-title" class="text-2xl font-bold text-[#FF6B00] mb-4"></h2>
                 <div id="equip-content"></div>
-                <a id="equip-pdf" href="#" target="_blank" class="block mt-6 w-full bg-[#FF6B00] text-black text-center py-4 rounded-lg font-bold text-lg hover:bg-white transition">📄 OUVRIR P&ID</a>
+                <a id="equip-pdf" href="#" target="_blank" class="block mt-6 w-full bg-[#FF6B00] text-black text-center py-4 rounded font-bold text-lg transition">📄 OUVRIR P&ID</a>
             </div>
         </div>
 
         <div id="view-dcs" class="hidden-view space-y-4">
-            <input type="text" id="dcs-search" placeholder="Rechercher Tag (ex: LIC-501)..." class="w-full p-4 bg-black border-2 border-[#FF6B00] rounded-xl text-white outline-none focus:border-white transition" oninput="renderDcs()" />
+            <input type="text" id="dcs-search" placeholder="Rechercher Tag (ex: LIC-501)..." class="w-full p-4 bg-[#1a1a1a] border border-[#FF6B00] rounded text-white outline-none focus:border-white transition" oninput="renderDcs()" />
             <div id="dcs-results" class="grid grid-cols-1 gap-6 mt-6">
-                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- DATABASE: EXTENDED MAINTENANCE INFO ---
+        // --- DATABASE ---
         const equipmentData = {
-            "E-501": {
-                name: "Condenseur de tête",
-                info: "Type: Shell & Tube | Press: 45 Bar | Temp: -160°C",
-                components: "Bundle: Stainless 316L | Gaskets: Spiral Wound Graphite",
-                tools: "Hydraulic Torque Wrench (3/4\"), Flange Spreader, Gasket Scraper, Pneumatic Impact Kit",
-                lifting: "Primary: 50T Mobile Crane | Slings: 4x 5m (10T each) | Spreader Bar required",
-                isolation: "Lockout: Inlet/Outlet Valves V-501/502 | Blind Flange: 12\" Class 600"
-            },
-            "E-502": {
-                name: "Rebouilleur MEA",
-                info: "Thermal Duty: 15 MW | Fluid: Amine/Steam",
-                components: "U-Tube Bundle | Carbon Steel Shell",
-                tools: "Tube Bundle Extractor, Pressure Test Pump (200 Bar), Internal Tube Cutter",
-                lifting: "A-Frame Gantry | Chain Block 10T | 2m Wire Rope Slings",
-                isolation: "Double Block & Bleed | Steam Header Isolation"
-            }
+            "E-501": { name: "Condenseur de tête", info: "Type: Shell & Tube | Press: 45 Bar | Temp: -160°C", components: "Bundle: Stainless 316L", tools: "Hydraulic Torque Wrench (3/4\"), Flange Spreader", lifting: "50T Mobile Crane", isolation: "Lockout Valves V-501/502" },
+            "E-502": { name: "Rebouilleur MEA", info: "Thermal Duty: 15 MW", components: "U-Tube Bundle", tools: "Tube Bundle Extractor", lifting: "A-Frame Gantry 10T", isolation: "Double Block & Bleed" }
         };
 
-        // --- DATABASE: PRE-INDEXED DCS TAGS ---
         const dcsIndex = [
             { file: "liquefaction-1.jpg", title: "MCR Section 500", tags: ["LIC-501", "TIC-502", "FIC-101", "XV-001", "PI-505"] },
-            { file: "decarbonation-01.jpg", title: "Decarbonation Unit", tags: ["PIC-201", "LIT-204", "HV-210", "E-502"] }
+            { file: "decarbonation-01.jpg", title: "Decarbonation Unit", tags: ["PIC-201", "LIT-204", "E-502"] }
         ];
 
         // --- LOGIC ---
@@ -117,7 +111,7 @@
         }
 
         function renderEquip() {
-            const tag = document.getElementById('equip-select').value.split(" - ")[0]; // Get tag from selection
+            const tag = document.getElementById('equip-select').value.split(" - ")[0];
             const data = equipmentData[tag];
             document.getElementById('equip-title').innerText = tag;
             document.getElementById('equip-pdf').href = `./pids/${tag.toLowerCase()}.pdf`;
@@ -151,21 +145,21 @@
                 if (matchTitle || matchTags || query === "") {
                     let tagsHtml = d.tags.map(t => {
                         const isMatch = t.toLowerCase().includes(query) && query !== "";
-                        const cssClass = isMatch ? "bg-[#FF6B00] text-black font-bold" : "bg-gray-800 text-gray-400";
+                        const cssClass = isMatch ? "bg-[#FF6B00] text-black font-bold" : "bg-black text-gray-400 border border-gray-700";
                         return `<span class="text-[11px] px-2 py-1 rounded ${cssClass}">${t}</span>`;
                     }).join('');
 
                     html += `
-                        <div class="bg-[#111] p-4 rounded-xl border border-gray-800 shadow-lg">
+                        <div class="bg-[#1a1a1a] p-4 rounded border border-gray-800 shadow-lg">
                             <h3 class="font-bold text-[#FF6B00] text-xl mb-3">${d.title}</h3>
                             <div class="flex flex-wrap gap-2 mb-4">${tagsHtml}</div>
-                            <img src="./assets/${d.file}" class="w-full rounded h-48 object-cover border border-gray-700" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=\\'text-xs text-[#FF6B00] p-4 border border-dashed border-gray-700 text-center rounded\\'>[Image DCS : ./assets/${d.file} non trouvée]</div>');" />
+                            <img src="./assets/${d.file}" class="w-full rounded h-48 object-cover border border-gray-700" onerror="this.style.display='none';" />
                         </div>
                     `;
                 }
             });
 
-            if(html === '') html = '<p class="text-gray-500 italic text-center p-6">Aucun résultat trouvé pour cette recherche.</p>';
+            if(html === '') html = '<p class="text-gray-500 italic text-center p-6">Aucun résultat.</p>';
             container.innerHTML = html;
         }
     </script>
