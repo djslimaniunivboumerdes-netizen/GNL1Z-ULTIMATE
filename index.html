@@ -1,131 +1,302 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Équipements GNL1Z</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        sonaOrange: '#FF6B00',
+                        sonaDark: '#1a1a1a',
+                        sonaLight: '#f4f4f5'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         .hidden-view { display: none !important; }
-        /* Custom dark grey for buttons to match your screenshot */
-        .btn-dark { background-color: #1a1a1a; }
+        /* Smooth transitions for theme switching */
+        body { transition: background-color 0.3s, color 0.3s; }
+        .accordion-content { transition: max-height 0.3s ease-out; overflow: hidden; }
     </style>
 </head>
-<body class="bg-black text-white font-sans min-h-screen">
+<body class="bg-sonaLight dark:bg-black text-gray-900 dark:text-white font-sans min-h-screen">
+
+    <div class="absolute top-4 right-4 flex space-x-3 z-50">
+        <button onclick="toggleTheme()" class="p-2 rounded-full bg-gray-200 dark:bg-gray-800 border border-gray-400 dark:border-gray-600">
+            <span id="theme-icon">🌙</span>
+        </button>
+        <button onclick="toggleLang()" id="lang-btn" class="px-3 py-1 text-sm font-bold rounded bg-gray-200 dark:bg-gray-800 border border-gray-400 dark:border-gray-600">
+            EN
+        </button>
+    </div>
 
     <div id="view-home" class="flex flex-col items-center justify-center min-h-screen p-6 text-center">
-        
-        <div class="bg-white p-4 mb-8">
+        <div class="bg-white p-4 mb-8 rounded shadow-md">
             <img src="./assets/sonatrach_logo.png" class="w-48" alt="Sonatrach" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Sonatrach.svg/1200px-Sonatrach.svg.png'" />
         </div>
         
-        <h1 class="text-4xl font-bold text-[#FF6B00] mb-10">Équipements GNL1Z</h1>
+        <h1 id="t-main-title" class="text-4xl font-bold text-sonaOrange mb-10">Équipements GNL1Z</h1>
 
         <div class="w-full max-w-sm space-y-4">
-            <button onclick="nav('about')" class="w-full py-4 btn-dark border border-[#FF6B00] rounded text-[#FF6B00] font-bold text-lg active:bg-[#FF6B00] active:text-black transition">À propos de GNL1Z</button>
-            <button onclick="nav('equip')" class="w-full py-4 btn-dark border border-[#FF6B00] rounded text-[#FF6B00] font-bold text-lg active:bg-[#FF6B00] active:text-black transition">Liste des Équipements</button>
-            <button onclick="nav('dcs')" class="w-full py-4 btn-dark border border-[#FF6B00] rounded text-[#FF6B00] font-bold text-lg active:bg-[#FF6B00] active:text-black transition">Système DCS & Tags</button>
-            
-            <div class="pt-6">
-                <button class="px-8 py-2 bg-transparent border border-gray-500 rounded text-gray-300 font-bold text-sm">English</button>
-            </div>
+            <button onclick="nav('about')" id="t-btn-about" class="w-full py-4 bg-white dark:bg-sonaDark border border-sonaOrange rounded text-sonaOrange font-bold text-lg shadow hover:bg-sonaOrange hover:text-white transition">À propos de GNL1Z</button>
+            <button onclick="nav('equip')" id="t-btn-equip" class="w-full py-4 bg-white dark:bg-sonaDark border border-sonaOrange rounded text-sonaOrange font-bold text-lg shadow hover:bg-sonaOrange hover:text-white transition">Liste des Équipements</button>
+            <button onclick="nav('app')" id="t-btn-app" class="w-full py-4 bg-white dark:bg-sonaDark border border-sonaOrange rounded text-sonaOrange font-bold text-lg shadow hover:bg-sonaOrange hover:text-white transition">À propos de l'App</button>
         </div>
     </div>
 
-    <div id="app-shell" class="hidden-view p-4 max-w-3xl mx-auto">
-        <button onclick="nav('home')" class="text-[#FF6B00] font-bold mb-6 flex items-center text-lg">← Retour</button>
+    <div id="app-shell" class="hidden-view p-4 max-w-md mx-auto pt-16">
+        <button onclick="nav('home')" id="t-btn-back" class="text-sonaOrange font-bold mb-6 flex items-center text-lg">← Retour</button>
 
-        <div id="view-equip" class="hidden-view space-y-4">
-            <select id="equip-select" class="w-full p-4 bg-[#1a1a1a] border border-[#FF6B00] rounded text-[#FF6B00] font-bold text-lg outline-none" onchange="renderEquip()">
-            </select>
+        <div id="view-about" class="hidden-view space-y-6">
+            <h2 id="t-about-title" class="text-2xl font-bold text-sonaOrange border-b border-sonaOrange pb-2">Résumé technique global du procédé GNL1/Z</h2>
+            
+            <div class="bg-white p-2 rounded border border-gray-300 dark:border-gray-700">
+                <img src="./assets/process_diagram.jpg" class="w-full rounded" alt="Process Diagram" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=\\'text-gray-500 text-center py-8\\'>[Diagramme du procédé non trouvé]</div>');" />
+            </div>
 
-            <div class="bg-[#1a1a1a] p-4 rounded border border-gray-800 mt-4">
-                <h2 id="equip-title" class="text-2xl font-bold text-[#FF6B00] mb-4"></h2>
-                <div id="equip-content"></div>
-                <a id="equip-pdf" href="#" target="_blank" class="block mt-6 w-full bg-[#FF6B00] text-black text-center py-4 rounded font-bold text-lg transition">📄 OUVRIR P&ID</a>
+            <div class="space-y-4 text-sm leading-relaxed dark:text-gray-300">
+                <div>
+                    <h3 class="font-bold text-sonaOrange text-lg">I. Pré-traitement du gaz naturel</h3>
+                    <p class="mt-2" id="t-about-p1">Avant la liquéfaction, le gaz brut subit plusieurs étapes pour atteindre la pureté nécessaire :</p>
+                    <ul class="list-disc pl-5 mt-2 space-y-1">
+                        <li><strong>Décarbonatation (MEA) :</strong> Élimination du CO2.</li>
+                        <li><strong>Déshydratation :</strong> Élimination de l'eau.</li>
+                        <li><strong>Démercurisation :</strong> Adsorption du mercure.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sonaOrange text-lg">II. Section de liquéfaction</h3>
+                    <p class="mt-2" id="t-about-p2">Liquéfaction principale utilisant le procédé MCR (Multi-Component Refrigerant) refroidi à -160°C.</p>
+                </div>
             </div>
         </div>
 
-        <div id="view-dcs" class="hidden-view space-y-4">
-            <input type="text" id="dcs-search" placeholder="Rechercher Tag (ex: LIC-501)..." class="w-full p-4 bg-[#1a1a1a] border border-[#FF6B00] rounded text-white outline-none focus:border-white transition" oninput="renderDcs()" />
-            <div id="dcs-results" class="grid grid-cols-1 gap-6 mt-6">
+        <div id="view-equip" class="hidden-view space-y-4">
+            
+            <div class="bg-sonaOrange text-white p-4 rounded-t-lg -mx-4 -mt-4 mb-4 shadow-md">
+                <h2 class="font-bold text-xl italic tracking-wider">SONATRACH</h2>
+                <p class="text-xs font-semibold opacity-90 uppercase tracking-widest">Division Production - GNL1Z</p>
+                <div class="absolute top-4 right-4 text-white opacity-40 font-black text-xl">DIGITAL TWIN</div>
             </div>
+
+            <label id="t-equip-label" class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Liste des Équipements</label>
+            <select id="equip-select" class="w-full p-4 bg-white dark:bg-sonaDark border border-gray-300 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white font-bold text-lg outline-none shadow-sm" onchange="renderEquip()">
+            </select>
+
+            <div class="mt-6">
+                <h2 id="equip-title" class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4"></h2>
+                
+                <div id="equip-content" class="space-y-3">
+                    </div>
+
+                <a id="equip-pdf" href="#" target="_blank" class="block mt-6 w-full bg-[#2c3e50] text-white text-center py-4 rounded-full font-bold text-lg shadow-lg hover:bg-gray-800 transition">
+                    <span id="t-btn-pid">View Technical P&ID</span>
+                </a>
+            </div>
+        </div>
+
+        <div id="view-app" class="hidden-view text-center space-y-4 mt-12">
+            <h2 class="text-2xl font-bold text-sonaOrange">GNL1Z Digital Twin</h2>
+            <p class="text-gray-600 dark:text-gray-400" id="t-app-desc">Système intelligent d'analyse P&ID et gestion de maintenance développé par Djamel Mokhtar Slimani.</p>
+            <p class="text-xs text-gray-500">Version 1.2.0</p>
         </div>
     </div>
 
     <script>
-        // --- DATABASE ---
-        const equipmentData = {
-            "E-501": { name: "Condenseur de tête", info: "Type: Shell & Tube | Press: 45 Bar | Temp: -160°C", components: "Bundle: Stainless 316L", tools: "Hydraulic Torque Wrench (3/4\"), Flange Spreader", lifting: "50T Mobile Crane", isolation: "Lockout Valves V-501/502" },
-            "E-502": { name: "Rebouilleur MEA", info: "Thermal Duty: 15 MW", components: "U-Tube Bundle", tools: "Tube Bundle Extractor", lifting: "A-Frame Gantry 10T", isolation: "Double Block & Bleed" }
+        // --- DATA DICTIONARY (i18n) ---
+        const dict = {
+            fr: {
+                mainTitle: "Équipements GNL1Z",
+                btnAbout: "À propos de GNL1Z",
+                btnEquip: "Liste des Équipements",
+                btnApp: "À propos de l'App",
+                btnBack: "← Retour",
+                equipLabel: "Liste des Équipements",
+                btnPid: "Voir le P&ID Technique",
+                aboutTitle: "Résumé technique global du procédé GNL1/Z",
+                aboutP1: "Avant la liquéfaction, le gaz brut subit plusieurs étapes pour atteindre la pureté nécessaire :",
+                aboutP2: "Liquéfaction principale utilisant le procédé MCR (Multi-Component Refrigerant) refroidi à -160°C.",
+                appDesc: "Système intelligent d'analyse P&ID et gestion de maintenance.",
+                secInfo: "ℹ️ Informations Équipement",
+                secComp: "⚙️ Composants",
+                secTools: "🔧 Outils Requis",
+                secLift: "🏗️ Levage et Manutention",
+                secInsul: "🌡️ Calorifuge / Insulation"
+            },
+            en: {
+                mainTitle: "GNL1Z Equipment",
+                btnAbout: "About GNL1Z Process",
+                btnEquip: "Equipment List",
+                btnApp: "About the App",
+                btnBack: "← Back",
+                equipLabel: "List of Equipment",
+                btnPid: "View Technical P&ID",
+                aboutTitle: "Global Technical Summary of GNL1/Z Process",
+                aboutP1: "Before liquefaction, raw gas undergoes several stages to reach the required purity:",
+                aboutP2: "Main liquefaction using MCR (Multi-Component Refrigerant) process cooled to -160°C.",
+                appDesc: "Intelligent P&ID analysis and maintenance management system.",
+                secInfo: "ℹ️ Equipment Information",
+                secComp: "⚙️ Components",
+                secTools: "🔧 Tools Required",
+                secLift: "🏗️ Lifting & Handling",
+                secInsul: "🌡️ Calorifuge / Insulation"
+            }
         };
 
-        const dcsIndex = [
-            { file: "liquefaction-1.jpg", title: "MCR Section 500", tags: ["LIC-501", "TIC-502", "FIC-101", "XV-001", "PI-505"] },
-            { file: "decarbonation-01.jpg", title: "Decarbonation Unit", tags: ["PIC-201", "LIT-204", "E-502"] }
-        ];
+        // --- DATABASE ---
+        const equipmentData = {
+            "E-501": { 
+                name: { fr: "Condenseur de tête", en: "Overhead Condenser" }, 
+                info: "Type: Shell & Tube | Surface: 450m² | Fluid: MCR/NG", 
+                components: "Bundle: Stainless 316L | Gaskets: Spiral Wound Graphite", 
+                tools: "Hydraulic Torque Wrench (3/4\"), Flange Spreader", 
+                lifting: "Primary: 50T Mobile Crane | Slings: 4x 5m (10T each)", 
+                insulation: "Cryogenic Polyurethane Foam | Aluminum Cladding" 
+            },
+            "E-502": { 
+                name: { fr: "Rebouilleur MEA", en: "MEA Reboiler" }, 
+                info: "Thermal Duty: 15 MW | Fluid: Amine/Steam", 
+                components: "U-Tube Bundle | Carbon Steel Shell", 
+                tools: "Tube Bundle Extractor", 
+                lifting: "A-Frame Gantry 10T", 
+                insulation: "Mineral Wool 50mm | Stainless Steel Cladding" 
+            }
+        };
 
-        // --- LOGIC ---
+        // --- STATE ---
+        let currentLang = 'fr';
+        // Check system preference or default to dark
+        let isDark = document.documentElement.classList.contains('dark'); 
+
+        // --- THEME & LANG LOGIC ---
+        function toggleTheme() {
+            isDark = !isDark;
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('theme-icon').innerText = '☀️';
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('theme-icon').innerText = '🌙';
+            }
+        }
+
+        function toggleLang() {
+            currentLang = currentLang === 'fr' ? 'en' : 'fr';
+            document.getElementById('lang-btn').innerText = currentLang === 'fr' ? 'EN' : 'FR';
+            applyTranslations();
+            // Re-render equipment dropdown & view to update dynamic text
+            if (!document.getElementById('view-equip').classList.contains('hidden-view')) {
+                renderEquipDropdown(); 
+            }
+        }
+
+        function applyTranslations() {
+            const d = dict[currentLang];
+            document.getElementById('t-main-title').innerText = d.mainTitle;
+            document.getElementById('t-btn-about').innerText = d.btnAbout;
+            document.getElementById('t-btn-equip').innerText = d.btnEquip;
+            document.getElementById('t-btn-app').innerText = d.btnApp;
+            document.getElementById('t-btn-back').innerText = d.btnBack;
+            document.getElementById('t-equip-label').innerText = d.equipLabel;
+            document.getElementById('t-btn-pid').innerText = d.btnPid;
+            document.getElementById('t-about-title').innerText = d.aboutTitle;
+            document.getElementById('t-about-p1').innerText = d.aboutP1;
+            document.getElementById('t-about-p2').innerText = d.aboutP2;
+            document.getElementById('t-app-desc').innerText = d.appDesc;
+        }
+
+        // --- NAVIGATION LOGIC ---
         function nav(view) {
             document.getElementById('view-home').classList.add('hidden-view');
             document.getElementById('app-shell').classList.add('hidden-view');
+            document.getElementById('view-about').classList.add('hidden-view');
             document.getElementById('view-equip').classList.add('hidden-view');
-            document.getElementById('view-dcs').classList.add('hidden-view');
+            document.getElementById('view-app').classList.add('hidden-view');
 
             if (view === 'home') {
                 document.getElementById('view-home').classList.remove('hidden-view');
-            } else if (view !== 'about') {
+            } else {
                 document.getElementById('app-shell').classList.remove('hidden-view');
                 document.getElementById('view-' + view).classList.remove('hidden-view');
                 if(view === 'equip') renderEquipDropdown();
-                if(view === 'dcs') renderDcs();
-            } else {
-                alert("Section À propos en construction.");
-                document.getElementById('view-home').classList.remove('hidden-view');
             }
         }
 
+        // --- EQUIPMENT LOGIC ---
         function renderEquipDropdown() {
             const select = document.getElementById('equip-select');
-            if(select.options.length === 0) {
-                for (const tag in equipmentData) {
-                    const opt = document.createElement('option');
-                    opt.value = tag;
-                    opt.innerHTML = tag + " - " + equipmentData[tag].name;
-                    select.appendChild(opt);
-                }
+            const currentVal = select.value; // Remember selection
+            select.innerHTML = ''; // Clear options
+            
+            for (const tag in equipmentData) {
+                const opt = document.createElement('option');
+                opt.value = tag;
+                opt.innerHTML = tag;
+                select.appendChild(opt);
             }
+            if(currentVal) select.value = currentVal;
             renderEquip();
         }
 
-        function toggleSec(secId) {
-            const content = document.getElementById('sec-content-' + secId);
-            const btnIcon = document.getElementById('sec-icon-' + secId);
-            if (content.classList.contains('hidden-view')) {
-                content.classList.remove('hidden-view');
-                btnIcon.innerText = '−';
+        function toggleAccordion(id) {
+            const content = document.getElementById('acc-content-' + id);
+            const icon = document.getElementById('acc-icon-' + id);
+            const header = document.getElementById('acc-header-' + id);
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.innerText = '−';
+                // Style header as active (like the orange header in screenshot 2)
+                header.classList.add('bg-sonaOrange', 'text-white');
+                header.classList.remove('bg-white', 'dark:bg-sonaDark', 'text-gray-700', 'dark:text-gray-300');
             } else {
-                content.classList.add('hidden-view');
-                btnIcon.innerText = '+';
+                content.classList.add('hidden');
+                icon.innerText = '+';
+                // Revert header style
+                header.classList.remove('bg-sonaOrange', 'text-white');
+                header.classList.add('bg-white', 'dark:bg-sonaDark', 'text-gray-700', 'dark:text-gray-300');
             }
         }
 
         function renderEquip() {
-            const tag = document.getElementById('equip-select').value.split(" - ")[0];
+            const tag = document.getElementById('equip-select').value;
             const data = equipmentData[tag];
-            document.getElementById('equip-title').innerText = tag;
+            const d = dict[currentLang];
+            
+            document.getElementById('equip-title').innerText = tag + " - " + data.name[currentLang];
             document.getElementById('equip-pdf').href = `./pids/${tag.toLowerCase()}.pdf`;
 
-            const sections = ["info", "components", "tools", "lifting", "isolation"];
+            const sections = [
+                { id: "info", title: d.secInfo, content: data.info },
+                { id: "comp", title: d.secComp, content: data.components },
+                { id: "tools", title: d.secTools, content: data.tools },
+                { id: "lift", title: d.secLift, content: data.lifting },
+                { id: "insul", title: d.secInsul, content: data.insulation }
+            ];
+
             let html = '';
             sections.forEach((sec, index) => {
+                // First section open by default to match screenshot
+                const isOpen = index === 0;
+                const headerColor = isOpen ? 'bg-sonaOrange text-white' : 'bg-white dark:bg-sonaDark text-gray-700 dark:text-gray-300';
+                const contentDisplay = isOpen ? '' : 'hidden';
+                const icon = isOpen ? '−' : '+';
+
                 html += `
-                    <div class="mb-2 border-b border-gray-800">
-                        <button onclick="toggleSec('${index}')" class="w-full py-4 flex justify-between uppercase text-xs font-bold tracking-widest text-gray-400 outline-none">
-                            ${sec} <span id="sec-icon-${index}" class="text-xl font-normal leading-none">+</span>
+                    <div class="rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                        <button id="acc-header-${sec.id}" onclick="toggleAccordion('${sec.id}')" class="w-full px-4 py-4 flex justify-between items-center font-bold text-sm transition-colors duration-200 ${headerColor}">
+                            <span>${sec.title}</span>
+                            <span id="acc-icon-${sec.id}" class="text-xl leading-none font-normal">${icon}</span>
                         </button>
-                        <div id="sec-content-${index}" class="hidden-view pb-4 text-sm text-slate-300 leading-relaxed">
-                            ${data[sec]}
+                        <div id="acc-content-${sec.id}" class="${contentDisplay} bg-orange-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 p-4 text-sm text-gray-800 dark:text-gray-300">
+                            ${sec.content}
                         </div>
                     </div>
                 `;
@@ -133,35 +304,8 @@
             document.getElementById('equip-content').innerHTML = html;
         }
 
-        function renderDcs() {
-            const query = document.getElementById('dcs-search').value.toLowerCase();
-            const container = document.getElementById('dcs-results');
-            let html = '';
-
-            dcsIndex.forEach(d => {
-                const matchTitle = d.title.toLowerCase().includes(query);
-                const matchTags = d.tags.some(t => t.toLowerCase().includes(query));
-
-                if (matchTitle || matchTags || query === "") {
-                    let tagsHtml = d.tags.map(t => {
-                        const isMatch = t.toLowerCase().includes(query) && query !== "";
-                        const cssClass = isMatch ? "bg-[#FF6B00] text-black font-bold" : "bg-black text-gray-400 border border-gray-700";
-                        return `<span class="text-[11px] px-2 py-1 rounded ${cssClass}">${t}</span>`;
-                    }).join('');
-
-                    html += `
-                        <div class="bg-[#1a1a1a] p-4 rounded border border-gray-800 shadow-lg">
-                            <h3 class="font-bold text-[#FF6B00] text-xl mb-3">${d.title}</h3>
-                            <div class="flex flex-wrap gap-2 mb-4">${tagsHtml}</div>
-                            <img src="./assets/${d.file}" class="w-full rounded h-48 object-cover border border-gray-700" onerror="this.style.display='none';" />
-                        </div>
-                    `;
-                }
-            });
-
-            if(html === '') html = '<p class="text-gray-500 italic text-center p-6">Aucun résultat.</p>';
-            container.innerHTML = html;
-        }
+        // Initialize translations on load
+        applyTranslations();
     </script>
 </body>
 </html>
