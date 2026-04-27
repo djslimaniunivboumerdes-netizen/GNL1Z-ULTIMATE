@@ -5,129 +5,169 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Équipements GNL1Z</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        .hidden-view { display: none !important; }
+    </style>
 </head>
-<body class="bg-black text-white font-sans">
-    <div id="root"></div>
-    <script type="text/babel">
-        const { useState } = React;
+<body class="bg-black text-white font-sans min-h-screen">
 
-        const App = () => {
-            const [view, setView] = useState("home"); // home, equip, dcs, about
-            const [selectedTag, setSelectedTag] = useState("E-501");
-            const [openSection, setOpenSection] = useState(null);
-            const [searchQuery, setSearchQuery] = useState("");
+    <div id="view-home" class="flex flex-col items-center justify-center min-h-screen p-6 text-center">
+        <img src="./assets/sonatrach_logo.png" class="w-48 mb-12" alt="Sonatrach" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Sonatrach.svg/1200px-Sonatrach.svg.png'" />
+        <h1 class="text-4xl font-bold text-[#FF6B00] mb-10">Équipements GNL1Z</h1>
 
-            // --- DATABASE: EXTENDED MAINTENANCE INFO ---
-            const equipmentData = {
-                "E-501": { 
-                    name: "Condenseur de tête", 
-                    info: "Type: Shell & Tube | Press: 45 Bar | Temp: -160°C", 
-                    components: "Bundle: Stainless 316L | Gaskets: Spiral Wound Graphite",
-                    tools: "Hydraulic Torque Wrench (3/4\"), Flange Spreader, Gasket Scraper, Pneumatic Impact Kit, Caliper, Ultrasonic Thickness Gauge",
-                    lifting: "Primary: 50T Mobile Crane | Slings: 4x 5m (10T each) | Shackles: 12T (Bow type) | Spreader Bar required",
-                    isolation: "Lockout: Inlet/Outlet Valves V-501/502 | Blind Flange: 12\" Class 600 | Nitrogen Purge required"
-                },
-                "E-502": { 
-                    name: "Rebouilleur MEA", 
-                    info: "Thermal Duty: 15 MW | Fluid: Amine/Steam", 
-                    components: "U-Tube Bundle | Carbon Steel Shell",
-                    tools: "Tube Bundle Extractor, Pressure Test Pump (200 Bar), Internal Tube Cutter, Cleaning Brushes",
-                    lifting: "A-Frame Gantry | Chain Block 10T | 2m Wire Rope Slings",
-                    isolation: "Double Block & Bleed | Steam Header Isolation | MEA Drainage protocol"
-                }
-            };
+        <div class="w-full max-w-sm space-y-4">
+            <button onclick="nav('about')" class="w-full py-3 border border-[#FF6B00] rounded-lg text-[#FF6B00] font-bold text-lg hover:bg-[#FF6B00] hover:text-white transition">À propos de GNL1Z</button>
+            <button onclick="nav('equip')" class="w-full py-3 border border-[#FF6B00] rounded-lg text-[#FF6B00] font-bold text-lg hover:bg-[#FF6B00] hover:text-white transition">Liste des Équipements</button>
+            <button onclick="nav('dcs')" class="w-full py-3 border border-[#FF6B00] rounded-lg text-[#FF6B00] font-bold text-lg hover:bg-[#FF6B00] hover:text-white transition">Système DCS & Tags</button>
+            <button class="w-full py-3 border border-gray-600 rounded-lg text-gray-400 font-bold text-lg">English</button>
+        </div>
+    </div>
 
-            // --- DATABASE: PRE-INDEXED DCS TAGS (SIMULATED OCR RESULT) ---
-            const dcsIndex = [
-                { file: "liquefaction-1.jpg", title: "MCR Section 500", tags: ["LIC-501", "TIC-502", "FIC-101", "XV-001", "PI-505"] },
-                { file: "decarbonation-01.jpg", title: "Decarbonation Unit", tags: ["PIC-201", "LIT-204", "HV-210", "E-502"] }
-            ];
+    <div id="app-shell" class="hidden-view p-4 max-w-3xl mx-auto">
+        <button onclick="nav('home')" class="text-[#FF6B00] font-bold mb-6 flex items-center text-lg">← Retour à l'accueil</button>
 
-            const filteredDcs = dcsIndex.filter(d => 
-                d.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())) ||
-                d.title.toLowerCase().includes(searchQuery.toLowerCase())
-            );
+        <div id="view-equip" class="hidden-view space-y-4">
+            <select id="equip-select" class="w-full p-4 bg-black border border-[#FF6B00] rounded-xl text-[#FF6B00] font-bold text-lg outline-none" onchange="renderEquip()">
+                </select>
 
-            // --- UI COMPONENTS ---
-            if (view === "home") {
-                return (
-                    <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center">
-                        <img src="./assets/sonatrach_logo.png" className="w-48 mb-12" alt="Sonatrach" />
-                        <h1 className="text-4xl font-bold text-[#FF6B00] mb-10">Équipements GNL1Z</h1>
-                        
-                        <div className="w-full max-w-sm space-y-4">
-                            <button onClick={() => setView("about")} className="w-full py-3 border border-[#FF6B00] rounded-lg text-[#FF6B00] font-bold text-lg hover:bg-[#FF6B00] hover:text-white transition">À propos de GNL1Z</button>
-                            <button onClick={() => setView("equip")} className="w-full py-3 border border-[#FF6B00] rounded-lg text-[#FF6B00] font-bold text-lg hover:bg-[#FF6B00] hover:text-white transition">Liste des Équipements</button>
-                            <button onClick={() => setView("dcs")} className="w-full py-3 border border-[#FF6B00] rounded-lg text-[#FF6B00] font-bold text-lg hover:bg-[#FF6B00] hover:text-white transition">Système DCS & Tags</button>
-                            <button className="w-full py-3 border border-gray-600 rounded-lg text-gray-400 font-bold text-lg">English</button>
-                        </div>
-                    </div>
-                );
-            }
+            <div class="bg-black p-4 rounded-2xl border border-gray-800 mt-4">
+                <h2 id="equip-title" class="text-2xl font-bold text-[#FF6B00] mb-4"></h2>
+                <div id="equip-content"></div>
+                <a id="equip-pdf" href="#" target="_blank" class="block mt-6 w-full bg-[#FF6B00] text-black text-center py-4 rounded-lg font-bold text-lg hover:bg-white transition">📄 OUVRIR P&ID</a>
+            </div>
+        </div>
 
-            return (
-                <div className="min-h-screen bg-slate-900 p-4">
-                    <button onClick={() => setView("home")} className="text-[#FF6B00] font-bold mb-4 flex items-center">← Retour</button>
-                    
-                    {view === "equip" && (
-                        <div className="space-y-4">
-                            <select 
-                                className="w-full p-4 bg-black border border-[#FF6B00] rounded-xl text-[#FF6B00] font-bold text-lg"
-                                onChange={(e) => setSelectedTag(e.target.value)}
-                            >
-                                {Object.keys(equipmentData).map(tag => <option key={tag}>{tag}</option>)}
-                            </select>
-
-                            <div className="bg-black p-4 rounded-2xl border border-gray-800">
-                                <h2 className="text-2xl font-bold text-[#FF6B00] mb-4">{selectedTag}</h2>
-                                {["info", "components", "tools", "lifting", "isolation"].map(sec => (
-                                    <div key={sec} className="mb-2 border-b border-gray-800">
-                                        <button 
-                                            onClick={() => setOpenSection(openSection === sec ? null : sec)}
-                                            className="w-full py-4 flex justify-between uppercase text-xs font-bold tracking-widest text-gray-400"
-                                        >
-                                            {sec} <span>{openSection === sec ? "−" : "+"}</span>
-                                        </button>
-                                        {openSection === sec && <div className="pb-4 text-sm text-slate-300">{equipmentData[selectedTag][sec]}</div>}
-                                    </div>
-                                ))}
-                                <a href={`./pids/${selectedTag.toLowerCase()}.pdf`} target="_blank" className="block mt-4 w-full bg-[#FF6B00] text-black text-center py-3 rounded-lg font-bold">OUVRIR P&ID</a>
-                            </div>
-                        </div>
-                    )}
-
-                    {view === "dcs" && (
-                        <div className="space-y-4">
-                            <input 
-                                type="text" 
-                                placeholder="Rechercher Tag (ex: LIC-501)..." 
-                                className="w-full p-4 bg-black border-2 border-[#FF6B00] rounded-xl text-white outline-none"
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                            <div className="grid grid-cols-1 gap-4 mt-4">
-                                {filteredDcs.map(d => (
-                                    <div key={d.file} className="bg-black p-4 rounded-xl border border-gray-800">
-                                        <h3 className="font-bold text-[#FF6B00] mb-2">{d.title}</h3>
-                                        <div className="flex flex-wrap gap-2 mb-4">
-                                            {d.tags.map(t => (
-                                                <span key={t} className={`text-[10px] px-2 py-1 rounded ${t.toLowerCase().includes(searchQuery.toLowerCase()) && searchQuery !== "" ? "bg-[#FF6B00] text-black" : "bg-gray-800 text-gray-400"}`}>{t}</span>
-                                            ))}
-                                        </div>
-                                        <img src={`./assets/${d.file}`} className="w-full rounded h-40 object-cover" />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
+        <div id="view-dcs" class="hidden-view space-y-4">
+            <input type="text" id="dcs-search" placeholder="Rechercher Tag (ex: LIC-501)..." class="w-full p-4 bg-black border-2 border-[#FF6B00] rounded-xl text-white outline-none focus:border-white transition" oninput="renderDcs()" />
+            <div id="dcs-results" class="grid grid-cols-1 gap-6 mt-6">
                 </div>
-            );
+        </div>
+    </div>
+
+    <script>
+        // --- DATABASE: EXTENDED MAINTENANCE INFO ---
+        const equipmentData = {
+            "E-501": {
+                name: "Condenseur de tête",
+                info: "Type: Shell & Tube | Press: 45 Bar | Temp: -160°C",
+                components: "Bundle: Stainless 316L | Gaskets: Spiral Wound Graphite",
+                tools: "Hydraulic Torque Wrench (3/4\"), Flange Spreader, Gasket Scraper, Pneumatic Impact Kit",
+                lifting: "Primary: 50T Mobile Crane | Slings: 4x 5m (10T each) | Spreader Bar required",
+                isolation: "Lockout: Inlet/Outlet Valves V-501/502 | Blind Flange: 12\" Class 600"
+            },
+            "E-502": {
+                name: "Rebouilleur MEA",
+                info: "Thermal Duty: 15 MW | Fluid: Amine/Steam",
+                components: "U-Tube Bundle | Carbon Steel Shell",
+                tools: "Tube Bundle Extractor, Pressure Test Pump (200 Bar), Internal Tube Cutter",
+                lifting: "A-Frame Gantry | Chain Block 10T | 2m Wire Rope Slings",
+                isolation: "Double Block & Bleed | Steam Header Isolation"
+            }
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        // --- DATABASE: PRE-INDEXED DCS TAGS ---
+        const dcsIndex = [
+            { file: "liquefaction-1.jpg", title: "MCR Section 500", tags: ["LIC-501", "TIC-502", "FIC-101", "XV-001", "PI-505"] },
+            { file: "decarbonation-01.jpg", title: "Decarbonation Unit", tags: ["PIC-201", "LIT-204", "HV-210", "E-502"] }
+        ];
+
+        // --- LOGIC ---
+        function nav(view) {
+            document.getElementById('view-home').classList.add('hidden-view');
+            document.getElementById('app-shell').classList.add('hidden-view');
+            document.getElementById('view-equip').classList.add('hidden-view');
+            document.getElementById('view-dcs').classList.add('hidden-view');
+
+            if (view === 'home') {
+                document.getElementById('view-home').classList.remove('hidden-view');
+            } else if (view !== 'about') {
+                document.getElementById('app-shell').classList.remove('hidden-view');
+                document.getElementById('view-' + view).classList.remove('hidden-view');
+                if(view === 'equip') renderEquipDropdown();
+                if(view === 'dcs') renderDcs();
+            } else {
+                alert("Section À propos en construction.");
+                document.getElementById('view-home').classList.remove('hidden-view');
+            }
+        }
+
+        function renderEquipDropdown() {
+            const select = document.getElementById('equip-select');
+            if(select.options.length === 0) {
+                for (const tag in equipmentData) {
+                    const opt = document.createElement('option');
+                    opt.value = tag;
+                    opt.innerHTML = tag + " - " + equipmentData[tag].name;
+                    select.appendChild(opt);
+                }
+            }
+            renderEquip();
+        }
+
+        function toggleSec(secId) {
+            const content = document.getElementById('sec-content-' + secId);
+            const btnIcon = document.getElementById('sec-icon-' + secId);
+            if (content.classList.contains('hidden-view')) {
+                content.classList.remove('hidden-view');
+                btnIcon.innerText = '−';
+            } else {
+                content.classList.add('hidden-view');
+                btnIcon.innerText = '+';
+            }
+        }
+
+        function renderEquip() {
+            const tag = document.getElementById('equip-select').value.split(" - ")[0]; // Get tag from selection
+            const data = equipmentData[tag];
+            document.getElementById('equip-title').innerText = tag;
+            document.getElementById('equip-pdf').href = `./pids/${tag.toLowerCase()}.pdf`;
+
+            const sections = ["info", "components", "tools", "lifting", "isolation"];
+            let html = '';
+            sections.forEach((sec, index) => {
+                html += `
+                    <div class="mb-2 border-b border-gray-800">
+                        <button onclick="toggleSec('${index}')" class="w-full py-4 flex justify-between uppercase text-xs font-bold tracking-widest text-gray-400 outline-none">
+                            ${sec} <span id="sec-icon-${index}" class="text-xl font-normal leading-none">+</span>
+                        </button>
+                        <div id="sec-content-${index}" class="hidden-view pb-4 text-sm text-slate-300 leading-relaxed">
+                            ${data[sec]}
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('equip-content').innerHTML = html;
+        }
+
+        function renderDcs() {
+            const query = document.getElementById('dcs-search').value.toLowerCase();
+            const container = document.getElementById('dcs-results');
+            let html = '';
+
+            dcsIndex.forEach(d => {
+                const matchTitle = d.title.toLowerCase().includes(query);
+                const matchTags = d.tags.some(t => t.toLowerCase().includes(query));
+
+                if (matchTitle || matchTags || query === "") {
+                    let tagsHtml = d.tags.map(t => {
+                        const isMatch = t.toLowerCase().includes(query) && query !== "";
+                        const cssClass = isMatch ? "bg-[#FF6B00] text-black font-bold" : "bg-gray-800 text-gray-400";
+                        return `<span class="text-[11px] px-2 py-1 rounded ${cssClass}">${t}</span>`;
+                    }).join('');
+
+                    html += `
+                        <div class="bg-[#111] p-4 rounded-xl border border-gray-800 shadow-lg">
+                            <h3 class="font-bold text-[#FF6B00] text-xl mb-3">${d.title}</h3>
+                            <div class="flex flex-wrap gap-2 mb-4">${tagsHtml}</div>
+                            <img src="./assets/${d.file}" class="w-full rounded h-48 object-cover border border-gray-700" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=\\'text-xs text-[#FF6B00] p-4 border border-dashed border-gray-700 text-center rounded\\'>[Image DCS : ./assets/${d.file} non trouvée]</div>');" />
+                        </div>
+                    `;
+                }
+            });
+
+            if(html === '') html = '<p class="text-gray-500 italic text-center p-6">Aucun résultat trouvé pour cette recherche.</p>';
+            container.innerHTML = html;
+        }
     </script>
 </body>
 </html>
